@@ -3,6 +3,7 @@ package com.example.circlegame2;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -166,13 +167,12 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			if(!mRun) {				
 				mHandler.post(new Runnable() {
-					@Override
 					public void run() {
 						// TODO Auto-generated method stub
 						Intent i = new Intent(mContext, EndGame.class);
 						i.putExtra("Score", score);
 						mContext.startActivity(i);
-						
+						((Activity) mContext).finish();
 					}					
 				});
 			}
@@ -268,7 +268,7 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 			player.incrementSpeed(ax, ay);
 			player.increment();
 			canvas.drawColor(Color.WHITE);
-			canvas.drawCircle(player.getX(), player.getY(), player.getRadius(), circPaint);
+			canvas.drawCircle(player.getX(), player.getY(), player.getRadius(), circPaint);			
 		}
 
 		/************************************************
@@ -280,11 +280,7 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 			if((System.currentTimeMillis() - startTime) > nextTime) {
 				boulderSpeed++;
 				nextTime += 20000;
-			}		
-			setUp(canvas);
-			drawScore(canvas);
-			//Draws the coins
-			drawCoins(canvas);
+			}
 
 			/*
 			 * Draws the boulders
@@ -329,8 +325,6 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 				if (robotCoeff < 0.1)
 					robotCoeff = 0.1;
 			}
-			setUp(canvas);
-			drawScore(canvas);
 
 			for(Robot r: robots) {
 				r.increment(player);

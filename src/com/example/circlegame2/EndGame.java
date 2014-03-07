@@ -33,10 +33,10 @@ public class EndGame extends Activity {
 				i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(i);
 				finish();
-			}
-			
+			}			
 		});
-	}
+		
+	}	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

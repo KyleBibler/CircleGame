@@ -88,6 +88,8 @@ public class Robot implements Obstacle {
 		// TODO Auto-generated method stub
 		int dx = xPos - p.getX();
 		int dy = yPos - p.getY();
+		int pSpeedX = p.getSpeed()[0];
+		int pSpeedY = p.getSpeed()[1];
 
 		if(Math.abs(dx) > Math.abs(dy)) {
 			if(dx <= 0)
