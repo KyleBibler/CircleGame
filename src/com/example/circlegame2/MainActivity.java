@@ -38,32 +38,26 @@ public class MainActivity extends Activity implements SensorEventListener {
 	private RelativeLayout layout;
 	private int level;
 	private TextView levelDisp;
-
-
-	@Override
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_main);		
 		//layout = (RelativeLayout) findViewById(R.id.screenLayout);
 		//insideLayout = findViewById(R.id.inside_layout);
-		//getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		//getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);		
 		
-		
-
 
 		sensorManager=(SensorManager) getSystemService(SENSOR_SERVICE);
 		sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 
 		final Button startBtn = (Button) findViewById(R.id.angry_btn);
 		levelDisp = (TextView) findViewById(R.id.textView2);
-		final TextView score = (TextView) findViewById(R.id.textView1);
 		ay = ax = az = 0;
 		level = 0;
 		scoreNum = 0;
 		View laserRadioButton = findViewById(R.id.radio_lasers);
 		((CompoundButton) laserRadioButton).setChecked(true); 
-		score.setText("Score: " + scoreNum);
 		this.updateLevelView();
 		
 		
@@ -78,9 +72,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 			az = (double) Math.round(az * 10) / 10;			
 			if(startBtn.getVisibility() == View.INVISIBLE) {
 				//testView.setText("X Acc: " + ax + "\nY Acc: " + ay + "\nZ Acc: " + az);	
-				 
-				scoreNum += 1;
-				score.setText("Score: " + scoreNum);		
 
 			}
 			handler.postDelayed(this, 10);

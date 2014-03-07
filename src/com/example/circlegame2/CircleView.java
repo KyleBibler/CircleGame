@@ -3,29 +3,24 @@ package com.example.circlegame2;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.view.ActionMode;
-import android.view.ActionMode.Callback;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewManager;
-import android.widget.TextView;
 
+@SuppressLint({ "ViewConstructor", "HandlerLeak" })
 class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 
 	class CircleThread extends Thread implements SensorEventListener {
@@ -43,6 +38,7 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 		private Paint laserPaint;
 		private Paint boulderPaint;
 		private Paint circPaint;
+		private Paint scorePaint;
 
 		private int maxLasers = 1;
 		private double robotCoeff = 0.8;
@@ -69,6 +65,8 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 		private int boulderSpeed;
 		private int level;
 
+		
+
 		/*********************************************************
 		 * CircleThread constructor
 		 * Does stuff
@@ -84,6 +82,7 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 			boulderPaint = new Paint();
 			circPaint = new Paint();
 			laserPaint = new Paint();
+			scorePaint = new Paint();
 
 			score = 0;
 
@@ -131,6 +130,9 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 			circPaint.setColor(Color.GREEN);
 			laserPaint.setColor(Color.RED);
 			laserPaint.setStyle(Style.FILL);
+			scorePaint.setColor(Color.BLACK);
+			scorePaint.setTextSize(50);
+			scorePaint.setTypeface(Typeface.DEFAULT_BOLD);
 
 			boulderPaint.setColor(Color.rgb(139, 69, 19));
 			boulderSpeed = 3;
@@ -140,6 +142,11 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 				sm.registerListener(this, s, SensorManager.SENSOR_DELAY_NORMAL);
 				try {					
 					c = mHolder.lockCanvas(null);
+					
+					setUp(c);
+					drawScore(c);
+					drawCoins(c);
+					
 					synchronized (mHolder) {
 						if(level == 0)
 							this.laserDraw(c);
@@ -156,6 +163,19 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 					}
 				}
 			}
+			
+			if(!mRun) {				
+				mHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						Intent i = new Intent(mContext, EndGame.class);
+						i.putExtra("Score", score);
+						mContext.startActivity(i);
+						
+					}					
+				});
+			}
 		}
 
 		public void setRunning(boolean b) {
@@ -164,6 +184,17 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 
 		public void setState(int mode) {
 			return;
+		}
+		
+		/***************************************
+		 * Draws and increments score
+		 * Probably
+		 ***************************************/
+		private void drawScore(Canvas canvas) {
+			int xCoord = (score > 99999) ? 350 : 400;
+			canvas.drawText("Score: " + score, xCoord, 40, scorePaint);
+			score += 1;
+			
 		}
 
 		/********************************************
@@ -177,19 +208,7 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 				maxLasers++;
 				nextTime += 15000;
 			}
-
-			/*
-			 * Player
-			 */
-			setUp(canvas);
-
-			/****************************************
-			 * Coins
-			 ****************************************/
-
-			drawCoins(canvas);
-
-
+			
 			/****************************************
 			 * Lasers
 			 ****************************************/
@@ -263,6 +282,7 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 				nextTime += 20000;
 			}		
 			setUp(canvas);
+			drawScore(canvas);
 			//Draws the coins
 			drawCoins(canvas);
 
@@ -298,7 +318,7 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 
 		/******************************************************************
-		 * 
+		 * Draws some robots, robot level needs work
 		 * @return
 		 *****************************************************************/
 		private void robotDraw(Canvas canvas) {
@@ -310,6 +330,7 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 					robotCoeff = 0.1;
 			}
 			setUp(canvas);
+			drawScore(canvas);
 
 			for(Robot r: robots) {
 				r.increment(player);
@@ -317,8 +338,8 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 				int y = r.getY();
 				int length = r.getLength();
 				canvas.drawRect(x, y, x + length, y + length, r.getPaint());
-				//if(r.collides(player))
-					//mRun = false;				
+				if(r.collides(player))
+					mRun = false;				
 			}
 			
 			if(robots.size() < 1) {
@@ -355,9 +376,8 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private Context mContext;
-	private TextView mScoreText;
-	private TextView mLevelText;
 	private CircleThread thread;
 	private View mLayout;
 	private int levelSelect;
@@ -368,7 +388,6 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 		SurfaceHolder holder = getHolder();
 		holder.addCallback(this);
 		levelSelect = level;
-
 
 		mLayout = layout;
 		thread = new CircleThread(holder, context, new Handler() {
