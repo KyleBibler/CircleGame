@@ -2,7 +2,7 @@ package com.example.circlegame2;
 
 public class Circle {
 
-	private int RADIUS = 100;
+	private int RADIUS = 50;
 	private int xPos, yPos;
 	private int maxHeight, maxWidth;
 	private int speedX;
@@ -10,12 +10,11 @@ public class Circle {
 	final private int MAXSPEED = 8;
 	final private double RESISTANCE = 0.3;
 	
-	public Circle(int height, int width, int radius) {
+	public Circle(int height, int width) {
 		xPos = width / 2;
 		yPos = height / 2;
 		maxHeight = height;
 		maxWidth = width;
-		RADIUS = radius;
 		speedX = 0;
 		speedY = 0;
 	}

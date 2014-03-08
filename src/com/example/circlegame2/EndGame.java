@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class EndGame extends Activity {
@@ -20,11 +21,22 @@ public class EndGame extends Activity {
 		setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		Intent intent = getIntent();
 		int score = intent.getIntExtra("Score", 0);
+//		int level = intent.getIntExtra("Level", 0);
+//		String levelName = "";
+//		if (level == 2) {
+//			levelName = "Robots";
+//		}
+//		else if (level == 1) {
+//			levelName = "Boulders";
+//		}
+//		else
+//			levelName = "Lasers";
+
 		final Context context = this;
 		TextView scoreView = (TextView) findViewById(R.id.textView2);
-		
+
 		scoreView.setText("Score: " + score);
-		
+
 		Button mainButton = (Button) findViewById(R.id.button1);
 		mainButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
@@ -36,6 +48,8 @@ public class EndGame extends Activity {
 			}			
 		});
 		
+		
+
 	}	
 
 	@Override
@@ -43,6 +57,19 @@ public class EndGame extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.end_game, menu);
 		return true;
+	}
+	
+	private class ScoreLayout extends LinearLayout {
+
+		private String name;
+		private String level;
+		private int score;
+		
+		public ScoreLayout(Context context, String initials, String levelName, int score) {
+			super(context);
+			// TODO Auto-generated constructor stub
+		}
+		
 	}
 
 }

@@ -121,7 +121,7 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 		public void run() {			
 
 			startTime = System.currentTimeMillis();
-			player = new Circle(getHeight(), getWidth(), 50);
+			player = new Circle(getHeight(), getWidth());
 
 			lasers = new ArrayList<Laser>();
 			boulders = new ArrayList<Boulder>();
@@ -171,9 +171,11 @@ class CircleView extends SurfaceView implements SurfaceHolder.Callback {
 						// TODO Auto-generated method stub
 						Intent i = new Intent(mContext, EndGame.class);
 						i.putExtra("Score", score);
+						//i.putExtra("Level", level);
 						mContext.startActivity(i);
 						((Activity) mContext).finish();
-					}					
+					}
+										
 				});
 			}
 		}
